@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mission Challenge · Módulo 5: Construye tu estrategia</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;background:linear-gradient(160deg,#3b1280,#7b2ff7 70%,#9b5cff);color:#fff}
+.w{max-width:780px;margin:0 auto;padding:16px}
+.card{background:#fff;color:#241a3a;border-radius:20px;padding:22px;box-shadow:0 6px 0 rgba(0,0,0,.22);margin-bottom:14px}
+h1{font-size:2rem;margin:.2em 0}h2{margin:.2em 0}
+.big{font-size:4rem;text-align:center;margin:0}
+label{display:block;font-weight:700;margin:14px 0 6px}
+input{width:100%;padding:14px;border:3px solid #d9ccf5;border-radius:12px;font-size:1.05rem;font-family:inherit}
+input:focus,button:focus-visible{outline:4px solid #ffcf33}
+.btn{display:inline-block;border:0;border-radius:14px;padding:14px 22px;font-size:1.05rem;font-weight:800;cursor:pointer;background:#26890c;color:#fff;box-shadow:0 5px 0 #17600a;font-family:inherit;margin:6px 6px 0 0}
+.btn.alt{background:#1368ce;box-shadow:0 5px 0 #0b4a96}
+.btn.gray{background:#6b5a8c;box-shadow:0 5px 0 #46386a}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.3)}
+.err{color:#c0172f;font-weight:700;min-height:1.4em}
+.top{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:800;margin-bottom:8px}
+.pill{background:rgba(255,255,255,.2);border-radius:99px;padding:6px 14px}
+.bar{height:12px;border-radius:9px;background:rgba(255,255,255,.25);overflow:hidden;margin-bottom:8px}
+.bar>i{display:block;height:100%;background:#ffcf33;width:0}
+.bar.t>i{background:#4be3a3;transition:width .1s linear}
+.q{font-size:1.2rem;line-height:1.5;font-weight:700}
+.tag{display:inline-block;font-size:.85rem;font-weight:700;background:#efe7ff;color:#4b1fa3;border-radius:99px;padding:4px 12px;margin-bottom:8px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+.ans{border:0;border-radius:14px;padding:18px 14px;color:#fff;font-size:1.02rem;font-weight:800;text-align:left;cursor:pointer;font-family:inherit;display:flex;gap:10px;align-items:center;min-height:74px;box-shadow:0 5px 0 rgba(0,0,0,.28)}
+.ans:disabled{cursor:default}
+.a0{background:#e21b3c}.a1{background:#1368ce}.a2{background:#c98a00}.a3{background:#26890c}
+.ans.ok{outline:5px solid #fff;box-shadow:0 0 0 9px #26890c}
+.ans.no{opacity:.35}
+.ans.pick.bad{opacity:1;outline:5px solid #fff;box-shadow:0 0 0 9px #8b0e20}
+.fb{border-radius:14px;padding:14px;margin-top:12px;font-weight:600;line-height:1.5}
+.fb.g{background:#dff6d6;color:#17600a}.fb.r{background:#ffe0e4;color:#8b0e20}
+.row{display:flex;align-items:center;gap:10px;margin:10px 0}
+.row .lbl{flex:0 0 190px;font-weight:700;font-size:.95rem}
+.row .m{flex:1;height:18px;background:#eee4ff;border-radius:9px;overflow:hidden}
+.row .m>i{display:block;height:100%}
+.row .p{flex:0 0 52px;text-align:right;font-weight:800}
+@media(max-width:560px){.row{flex-wrap:wrap}.row .lbl{flex:1 0 100%}}
+.rev{border-left:6px solid;padding:8px 12px;margin:10px 0;border-radius:6px;background:#faf7ff}
+.rev.g{border-color:#26890c}.rev.r{border-color:#e21b3c}
+.rev small{display:block;color:#5b4a80;margin-top:4px;line-height:1.45}
+.score{font-size:3.2rem;font-weight:900;text-align:center;color:#4b1fa3;margin:0}
+.reinf{background:#fff4d6;border-radius:12px;padding:12px 16px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="w" id="app"></div>
+<script>
+// Se guarda el código original para poder descargar este mismo archivo.
+const SRC='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+
+const TOPICS=['Empezar con poco dinero','Estrategia a largo plazo','Plan financiero'];
+const COL=['#e21b3c','#1368ce','#c98a00'];
+const Q=[
+{t:0,e:'💳',q:'Ana gana $2,000 al mes, quiere empezar a invertir y tiene una deuda de tarjeta con intereses muy altos. ¿Qué conviene hacer primero?',o:['Pagar la deuda cara y juntar un mini fondo de emergencia','Invertir todo en acciones para compensar los intereses','Esperar a ganar más para empezar','Comprar la criptomoneda del momento'],a:0,x:'Los intereses de una tarjeta suelen superar lo que rinde una inversión sencilla. Primero elimina la deuda cara y arma un colchón para imprevistos.'},
+{t:0,e:'⏳',q:'Luis aporta $500 cada mes durante 10 años. ¿Qué factores hacen más por su resultado final?',o:['Acertar el día exacto para entrar al mercado','La constancia de sus aportaciones y el tiempo','Invertir solo cuando tenga dinero de sobra','Cambiar de inversión cada mes'],a:1,x:'Aportar de forma constante y dar tiempo al dinero pesa más que intentar adivinar el mejor momento. Con 7% anual supuesto, $500 al mes serían cerca de $86,000 en 10 años (no garantizado).'},
+{t:0,e:'🧾',q:'Marta quiere invertir $500 en una plataforma que cobra $50 de comisión fija por operación. ¿Cuál es el problema?',o:['Ninguno, $50 es una cantidad pequeña','La comisión se come el 10% de su inversión desde el inicio','Las plataformas no pueden cobrar comisiones','Solo importa la comisión si invierte más de $10,000'],a:1,x:'Con montos pequeños, las comisiones fijas pesan mucho. Compara costos y verifica que la plataforma esté regulada por la CNBV.'},
+{t:0,e:'🏦',q:'Quieres empezar con muy poco dinero y con riesgo bajo en México. ¿Qué opción es la más accesible?',o:['Comprar un departamento para rentarlo','Abrir una franquicia','Comprar CETES desde una plataforma como CETESDirecto','Comprar un terreno'],a:2,x:'Los CETES son deuda del gobierno y se pueden comprar con montos muy bajos (confirma el mínimo vigente en la plataforma). Es una puerta de entrada común.'},
+{t:1,e:'🏠',q:'Sofía necesitará su dinero dentro de 2 años para el enganche de un departamento. ¿Cómo debería invertirlo?',o:['Todo en acciones, porque rinden más','Principalmente en instrumentos de bajo riesgo, como CETES','En un solo ETF de tecnología','En criptomonedas'],a:1,x:'Dinero que se usará en menos de 3 años no debería estar expuesto a caídas fuertes. Prioriza estabilidad sobre rendimiento.'},
+{t:1,e:'⚖️',q:'Tus acciones crecieron y ahora pesan 80% de tu portafolio, aunque tu plan era 60%. ¿Qué es rebalancear?',o:['Vender todo y empezar de cero','Dejarlo así porque va ganando','Volver a las proporciones del plan, por ejemplo una vez al año','Comprar más de lo que más subió'],a:2,x:'Rebalancear es regresar a tu asignación original. Así no asumes más riesgo del que elegiste cuando una parte del portafolio crece mucho.'},
+{t:1,e:'📉',q:'El mercado cae 20%. Diego tiene un horizonte de 25 años y un plan definido. ¿Cuál es la mejor reacción?',o:['Vender todo para no perder más','Cancelar sus aportaciones hasta que suba','Mantener su plan y seguir aportando','Meter todos sus ahorros de emergencia'],a:2,x:'Las caídas son normales en renta variable. Lo que más daña resultados a largo plazo es vender por pánico. Y el fondo de emergencia no se invierte.'},
+{t:1,e:'📅',q:'Invertir la misma cantidad cada mes, sin importar si el mercado sube o baja, ayuda principalmente a…',o:['Garantizar que nunca pierdas','Evitar intentar adivinar el mejor momento de entrada (costo promedio)','Pagar menos impuestos siempre','Eliminar el riesgo por completo'],a:1,x:'Las aportaciones periódicas promedian tu precio de compra y vuelven el hábito automático. No eliminan el riesgo ni garantizan ganancias.'},
+{t:2,e:'🎯',q:'¿Cuál de estas es una meta financiera SMART (específica, medible, con fecha y realista)?',o:['Quiero ahorrar más','Juntar $15,000 de fondo de emergencia en 10 meses, aportando $1,500 al mes','Ser rico algún día','Gastar menos en general'],a:1,x:'Una meta clara dice cuánto, para qué y para cuándo, y se puede medir cada mes.'},
+{t:2,e:'🐷',q:'“Págate primero” significa…',o:['Gastar en lo que quieras antes de pagar tus deudas','Separar tu ahorro o inversión apenas recibes ingresos, antes de gastar','Ahorrar solo lo que sobre a fin de mes','Comprarte un premio cada que ahorres'],a:1,x:'Lo que sobra casi nunca alcanza. Automatiza la transferencia al recibir tu ingreso para que ahorrar no dependa de tu fuerza de voluntad.'},
+{t:2,e:'🗺️',q:'Estás armando tu hoja de ruta. ¿Qué corresponde a los primeros 30 días?',o:['Hacer tu primer rebalanceo anual','Registrar tus gastos, definir 3 metas y abrir tu cuenta de ahorro o inversión','Pedir un préstamo para invertir','Cambiar todo tu portafolio'],a:1,x:'Primero se ordena la base: saber en qué se va tu dinero, fijar metas y abrir el lugar donde ahorrarás o invertirás.'},
+{t:2,e:'🚨',q:'Te ofrecen una “inversión” con 8% de ganancia garantizada cada mes. ¿Qué haces?',o:['Invertir rápido antes de que se acabe el cupo','Desconfiar: es una señal típica de fraude; verificar si está autorizada por la CNBV','Invertir solo si lo recomienda un amigo','Meter todos tus ahorros porque es “seguro”'],a:1,x:'Rendimientos altos y garantizados, presión por decidir ya y falta de regulación son señales de estafa. Verifica siempre antes de entregar dinero.'}
+];
+
+let S,SEC=20,tm=null;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const SH=['▲','◆','●','■'];
+
+function start(){
+  $('#app').innerHTML=`<div class="card"><p class="big">🚀</p><h1 style="text-align:center">Mission Challenge</h1>
+  <p style="text-align:center;font-size:1.1rem;margin:0 0 4px"><b>Módulo 5 · Construye tu estrategia</b></p>
+  <p style="text-align:center">12 preguntas con escenarios reales. Tienes ${SEC} segundos por pregunta y ganas más puntos si respondes rápido y en racha.</p>
+  <label for="nm">Nombre completo del estudiante</label><input id="nm" autocomplete="name" placeholder="Ej. María López Hernández">
+  <label for="id">ID o matrícula</label><input id="id" autocomplete="off" placeholder="Ej. A01234567">
+  <p class="err" id="er"></p>
+  <button class="btn" id="go">Comenzar misión</button>
+  <button class="btn alt" id="dl0">Descargar este archivo HTML</button></div>`;
+  $('#go').onclick=()=>{
+    const n=$('#nm').value.trim(),i=$('#id').value.trim();
+    if(!n||!i){$('#er').textContent='Escribe tu nombre y tu ID para comenzar.';return}
+    S={name:n,id:i,i:0,score:0,streak:0,best:0,log:[],order:shuf(Q.map((_,k)=>k)),started:new Date()};
+    show();
+  };
+  $('#dl0').onclick=()=>dl('mission_challenge_modulo_5.html',SRC,'text/html');
+}
+
+function show(){
+  clearInterval(tm);
+  const k=S.order[S.i],q=Q[k],opts=shuf(q.o.map((t,j)=>({t,ok:j===q.a})));
+  S.cur={k,opts,t0:Date.now(),done:false};
+  $('#app').innerHTML=`<div class="top"><span class="pill">👤 ${esc(S.name)} · ${esc(S.id)}</span><span class="pill">Pregunta ${S.i+1}/${Q.length}</span><span class="pill">⭐ ${S.score}</span><span class="pill">🔥 Racha ${S.streak}</span></div>
+  <div class="bar"><i style="width:${S.i/Q.length*100}%"></i></div><div class="bar t"><i id="tb" style="width:100%"></i></div>
+  <div class="card"><span class="tag">${TOPICS[q.t]}</span><p class="big" aria-hidden="true">${q.e}</p><p class="q">${esc(q.q)}</p></div>
+  <div class="grid">${opts.map((o,j)=>`<button class="ans a${j}" data-j="${j}"><span aria-hidden="true">${SH[j]}</span><span>${esc(o.t)}</span></button>`).join('')}</div><div id="fb"></div>`;
+  document.querySelectorAll('.ans').forEach(b=>b.onclick=()=>answer(+b.dataset.j));
+  tm=setInterval(()=>{
+    const left=SEC*1000-(Date.now()-S.cur.t0);
+    $('#tb').style.width=Math.max(0,left/(SEC*10))+'%';
+    if(left<=0)answer(-1);
+  },100);
+}
+
+function answer(j){
+  const c=S.cur;if(c.done)return;c.done=true;clearInterval(tm);
+  const q=Q[c.k],el=(Date.now()-c.t0)/1000,ok=j>=0&&c.opts[j].ok;
+  let pts=0;
+  if(ok){S.streak++;S.best=Math.max(S.best,S.streak);pts=100+Math.round(Math.max(0,SEC-el)/SEC*50)+Math.min(S.streak-1,5)*10;S.score+=pts}else S.streak=0;
+  S.log.push({k:c.k,t:q.t,ok,pick:j>=0?c.opts[j].t:'(Sin respuesta: se acabó el tiempo)',sec:+el.toFixed(1),pts});
+  document.querySelectorAll('.ans').forEach((b,n)=>{b.disabled=true;
+    if(c.opts[n].ok)b.classList.add('ok');else{b.classList.add('no');if(n===j)b.classList.add('pick','bad')}});
+  const last=S.i===Q.length-1;
+  $('#fb').innerHTML=`<div class="fb ${ok?'g':'r'}">${ok?'✅ ¡Correcto! +'+pts+' puntos'+(S.streak>1?' · racha de '+S.streak:''):(j<0?'⏰ Se acabó el tiempo.':'❌ Casi.')} ${esc(q.x)}</div><button class="btn" id="nx">${last?'Ver mis resultados':'Siguiente pregunta'}</button>`;
+  $('#nx').onclick=()=>{S.i++;last?results():show()};
+  $('#nx').focus();
+}
+
+function pct(t){const l=S.log.filter(r=>r.t===t);return l.length?Math.round(l.filter(r=>r.ok).length/l.length*100):0}
+
+function results(){
+  const good=S.log.filter(r=>r.ok).length,p=Math.round(good/Q.length*100);
+  const medal=p>=90?'🏆':p>=70?'🥇':p>=50?'🥈':'🌱';
+  const weak=TOPICS.map((n,t)=>({n,t,p:pct(t)})).filter(x=>x.p<75);
+  const rows=TOPICS.map((n,t)=>{const v=pct(t);return `<div class="row"><span class="lbl">${n}</span><span class="m"><i style="width:${v}%;background:${COL[t]}"></i></span><span class="p">${v}%</span></div>`}).join('');
+  const rev=S.log.map((r,n)=>{const q=Q[r.k];return `<div class="rev ${r.ok?'g':'r'}"><b>${n+1}. ${q.e} ${esc(q.q)}</b><small>Tu respuesta: ${esc(r.pick)}${r.ok?'':'<br>Respuesta correcta: '+esc(q.o[q.a])}<br>${esc(q.x)}</small></div>`}).join('');
+  $('#app').innerHTML=`<div class="card"><p class="big">${medal}</p><h1 style="text-align:center">¡Misión completada, ${esc(S.name.split(' ')[0])}!</h1>
+  <p style="text-align:center;margin:0">ID: ${esc(S.id)}</p><p class="score">${S.score} pts</p>
+  <p style="text-align:center;font-size:1.1rem">${good} de ${Q.length} correctas (${p}%) · Mejor racha: ${S.best}</p></div>
+  <div class="card"><h2>Resultados por tema</h2>${rows}
+  <div class="reinf">${weak.length?'<b>Conviene reforzar:</b> '+weak.map(x=>x.n).join(', ')+'. Repasa la explicación de ese subtema y vuelve a intentarlo.':'<b>¡Excelente!</b> Dominas los tres subtemas del módulo.'}</div></div>
+  <div class="card"><h2>Revisión de respuestas</h2>${rev}</div>
+  <div class="card"><button class="btn" id="dr">Descargar mis resultados (CSV)</button><button class="btn alt" id="dh">Descargar este archivo HTML</button><button class="btn gray" id="rt">Intentar de nuevo</button></div>`;
+  $('#dr').onclick=csv;
+  $('#dh').onclick=()=>dl('mission_challenge_modulo_5.html',SRC,'text/html');
+  $('#rt').onclick=start;
+  window.scrollTo(0,0);
+}
+
+function csv(){
+  const f=v=>'"'+String(v).replace(/"/g,'""')+'"';
+  const L=[['Estudiante',S.name],['ID',S.id],['Fecha',S.started.toLocaleString('es-MX')],['Puntos',S.score],['Correctas',S.log.filter(r=>r.ok).length+'/'+Q.length],[],
+  ['#','Tema','Pregunta','Respuesta del estudiante','Respuesta correcta','Resultado','Segundos','Puntos']];
+  S.log.forEach((r,n)=>{const q=Q[r.k];L.push([n+1,TOPICS[r.t],q.q,r.pick,q.o[q.a],r.ok?'Correcta':'Incorrecta',r.sec,r.pts])});
+  TOPICS.forEach((n,t)=>L.push(['','Dominio: '+n,pct(t)+'%']));
+  const safe=S.id.replace(/[^\w-]/g,'');
+  dl('resultados_'+(safe||'estudiante')+'.csv','\ufeff'+L.map(r=>r.map(f).join(',')).join('\r\n'),'text/csv;charset=utf-8');
+}
+
+function dl(name,text,type){
+  const u=URL.createObjectURL(new Blob([text],{type}));
+  const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(u);a.remove()},500);
+}
+start();
+</script>
+</body>
+</html>
